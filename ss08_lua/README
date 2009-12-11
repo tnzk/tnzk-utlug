@@ -1,1 +1,37 @@
-In ss08 I will speak about Lua as an embeddable script language
+Last updated at 2009/12/11
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+ Univ. Tsukuba Linux User Group 8th study session
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+In ss08(8th study session), I will speak about Lua as
+an embeddable script language.
+
+* MILESTONES
+* REQUIREMENTS
+
+== MILESTONES ====
+
+Milestones are listed below with each status:
+
+  1. Handling the C API provided by Lua		[TODO]   0%
+  2. Designing structures to simulate within	[TODO]   0%
+     functions written by user in Lua, and
+     building an interface to wrap it.
+  3. Writing a simple shooting game with	[TODO]   0%
+     OpenGL/GLUT
+  4. Emebed (2) into (3)			[TODO]   0%
+  5. Making it cool ;)				[TODO]   0%
+
+== REQUIREMENTS ====
+
+Note that this section may be out of date so look at top
+of this file to check if that is new enough.
+
+We know the truth is always in the codes :)
+
+in yum:
+
+  * lua
+  * lua-devel
