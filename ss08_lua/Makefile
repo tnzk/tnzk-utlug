@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -llua
 
-calltest: callinglua.c
-	$(CC) $(CFLAGS) -o callinglua callinglua.c
+ss08: ss08.c
+	$(CC) $(CFLAGS) -o ss08 ss08.c
 
 clean:
-	rm callinglua
+	rm ss08
 	rm *~ *.o

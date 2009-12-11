@@ -3,6 +3,7 @@
 #include <lualib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "ss08.h"
 
 void dump_stack( lua_State* L)
 {
@@ -41,11 +42,30 @@ void dump_stack( lua_State* L)
   printf("+--+--+-------------------------\n\n");
 }
 
+void setfield(lua_State* L, const char* key, int value)
+{
+  lua_pushnumber(L, value);
+  lua_setfield(L, -2, key);
+}
+
+void add_enminfo(lua_State* L, int index, TkbEnemy* enm)
+{
+  lua_pushnumber(L, index);
+  lua_newtable(L);
+  setfield(L, "id",   enm->id);
+  setfield(L, "type", enm->type);
+  setfield(L, "x", enm->x);
+  setfield(L, "y", enm->y);
+  setfield(L, "theta", enm->theta);
+  lua_settable(L, -3);
+}
+
 int main( int argc, char** argv)
 {
-
+  
+  TkbEnemy enms[NUM_ENEMY];
   lua_State* L;
-  int n;
+  int i;
   int result;
 
   if( argc == 1){
@@ -53,36 +73,33 @@ int main( int argc, char** argv)
     return -1;
   }
 
-  n = atoi( argv[1]);
+  for( i = 0; i < NUM_ENEMY; i++){
+    enms[i].id = i;
+    enms[i].type = NUM_ENEMY - i;
+    enms[i].x = i + 1;
+    enms[i].y = i + 2;
+    enms[i].theta = i * 15;
+  }
 
   L = lua_open();
   luaL_openlibs(L);
 
-  if(luaL_dofile(L, "testlib.lua")){
+  if(luaL_dofile(L, argv[1])){
     puts( "LOAD ERROR");
     return -1;
   }
 
-  lua_getglobal(L, "things_to_buy");
-  dump_stack(L);
-
-  lua_getfield(L, -1, "coke");
-  dump_stack(L);
-
-  lua_getglobal(L, "fib");
-  dump_stack(L);
-
-  lua_pushnumber(L, n);
-  dump_stack(L);
-
+  lua_getglobal(L, "decision");
+  lua_newtable(L);
+  for( i = 0; i < NUM_ENEMY; i++){
+    add_enminfo(L, i + 1, (enms + i));
+  }
   lua_pcall(L, 1, 1, 0);
   dump_stack(L);
 
-  result = lua_tonumber(L, -1);
-
   lua_close(L);
 
-  printf("fib(%i) = %i\n", n, result);
+  //printf("fib(%i) = %i\n", n, result);
 
   return 0;
 }
