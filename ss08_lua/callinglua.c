@@ -6,7 +6,11 @@
 
 void dump_stack( lua_State* L)
 {
-
+  /*
+    Dumping Lua stack to show value, positive index and negative index of each element.
+    If an element is typed as a string, a boolean or a number then print its value.
+    In other case this will print a type of the element.
+   */
   static int c = 0;
   int i;
   int top = lua_gettop(L);
