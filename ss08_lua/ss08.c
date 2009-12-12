@@ -75,7 +75,7 @@ int main( int argc, char** argv)
   int result;
 
   if( argc == 1){
-    puts("Too few parameters");
+    puts("Too few parameters. This require a file name of lua script as an argument.");
     return -1;
   }
   num_ai = argc - 1;
