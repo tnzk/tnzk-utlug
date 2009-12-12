@@ -1,8 +1,12 @@
+// Using Lua libralies
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+
+// Using C standard libraries
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "ss08.h"
 
 void dump_stack( lua_State* L)
@@ -65,13 +69,17 @@ int main( int argc, char** argv)
   
   TkbEnemy enms[NUM_ENEMY];
   lua_State* L;
+  lua_State** Ls;
   int i;
+  int num_ai;
   int result;
 
   if( argc == 1){
     puts("Too few parameters");
     return -1;
   }
+  num_ai = argc - 1;
+  Ls = (lua_State**)malloc(num_ai * sizeof(lua_State*));
 
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].id = i;
@@ -81,25 +89,28 @@ int main( int argc, char** argv)
     enms[i].theta = i * 15;
   }
 
-  L = lua_open();
-  luaL_openlibs(L);
+  for( i = 0; i < num_ai; i++){
+    int j;
+    Ls[i] = lua_open();
+    luaL_openlibs(Ls[i]);
 
-  if(luaL_dofile(L, argv[1])){
-    puts( "LOAD ERROR");
-    return -1;
+    if(luaL_dofile(Ls[i], argv[i + 1])){
+      puts( "LOAD ERROR");
+      return -1;
+    }
+
+    lua_getglobal(Ls[i], "decision");
+    lua_newtable(Ls[i]);
+    for( j = 0; j < NUM_ENEMY; j++){
+      add_enminfo(Ls[i], i + 1, (enms + i));
+    }
+    lua_pcall(Ls[i], 1, 1, 0);
+
+    dump_stack(Ls[i]);
+
+    lua_close(Ls[i]);
   }
 
-  lua_getglobal(L, "decision");
-  lua_newtable(L);
-  for( i = 0; i < NUM_ENEMY; i++){
-    add_enminfo(L, i + 1, (enms + i));
-  }
-  lua_pcall(L, 1, 1, 0);
-  dump_stack(L);
-
-  lua_close(L);
-
-  //printf("fib(%i) = %i\n", n, result);
 
   return 0;
 }
