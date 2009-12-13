@@ -1,0 +1,193 @@
+* org-modeでemacsをメモ帳にする 		:発表:第6回つくらぐ勉強会:
+  :PROPERTIES:
+  statr timer with C-c C-x 0 before presentation
+  :END:
+** 自己紹介
+- 堀本 貴幸 (opentaka)
+- [[opentaka<at>tsukuba-linux.org]]
+- [[http://www.opentaka.org/]]
+
+#survey: emacsen? used org-mode before?
+
+** いままでのノートテイク
+
+| 持ち物     | 書きたい内容 | 書く内容                                           |
+|------------+--------------+----------------------------------------------------|
+| メモ帳     | IDEA         | Gentoo PortageをCLISPで書くと速くなうかもしれない? |
+|------------+--------------+----------------------------------------------------|
+| 講義ノート | 講義でのメモ | 情報の解釈は人間が行う                             |
+|------------+--------------+----------------------------------------------------|
+| ToDoリスト | ToDo         | [ ] 水曜日までにつくらぐの資料作成する             |
+|            |              | [ ] 次の勉強会は土日にしたほうが良いのか話し合い   |
+|------------+--------------+----------------------------------------------------|
+
+** 問題点
+- 講義ノートを取っている時にレポートの課題が出された場合、ToDoリストを引っ張りだしてこなければいけない
+- 更に講義ノートを取ってToDoリストに書き込んでる時にIDEAが浮かんだらメモ帳を引っ張りだしてこなければいけない
+
+     *そもそも講義ノートとToDo、分ける必要はあるのか?*
+
+** Plain-textの魅力
+- 依存しない
+  - どのアプリケーションでも開ける
+  - どのOSでも開ける
+  - どのコンピュータでも開ける
+- ファイルサイズが小さい
+- =grep=, =sed-, =awk=, =head=, =tail= など、多くのコマンドが使える
+  - =diff= もできる
+  - =git= とかで管理もできる
+
+- *すごく* 扱いやすい
+
+** Introduction to org-mode
+www: [[http://orgmode.org]]
+
+*引用 from [[http://hpcgi1.nifty.com/spen/index.cgi?OrgMode]]*
+"Org-modeはCarsten Dominik氏が作成したEmacsのOutline-modeを大幅に拡張し
+たアウトライナーのLisp（マクロ）である。 Org＝organizerという名のとおり、
+アウトライナーの域を超えて、プロジェクトやTODOを管理したり、スケジュー
+ルを組んだりするオーガナイザーである。"
+
++ Emacs22から入っている
++ Emacs22/23に入っているパッケージは古い。マニュアルに書かれている機能
+  が動かなかったりするので最新版(6.31a)を使ったほうが良い。
+
+** Install/Configure org-mode
+Debian:
+=# aptitude install org-mode=
+
+Gentoo:
+=# emerge org-mode=
+
+.emacs: パッケージマネージャからインストールした場合
+
+     ;org
+     (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+     (global-set-key "\C-cl" 'org-store-link)
+     (global-set-key "\C-ca" 'org-agenda)
+     (global-set-key "\C-cb" 'org-iswitchb)
+     
+** Create a basic Outline
+例えば、簡単なアウトライン:
+| * OSについて                                                                |
+| ** Windows,Mac,Linuxなどが有名                                              |
+| * プログラミング言語について                                                |
+| ** C言語?                                                                   |
+| *** K&Rの本がおすすめらしい                                                 |
+| ** CommonLisp?                                                              |
+| *** Practical Common Lispがおすすめらしい                                   |
+| **** Paul GrahamのANSI Common Lispとか、ちょっと難しめのOn Lispもあるらしい |
+
+アウトラインとは別に、リストも組み込める:
+| * Linuxディストリビューション |
+| - Debian                      |
+| - Gentoo Linux                |
+| - Fedora Core                 |
+| * コマンド                    |
+| - ls                          |
+| - cat                         |
+| - halt                        |
+
+#DEMO:
+1. outline
+2. list
+3. M-Up, M-Downで動かす (outline及びlist)
+4. listのprefix変更 `C-c -`
+
+#DEMO-SPACE
+--------------------------------------------------------------------
+*** techno
+** Create a basic Table
+例えば、簡単なテーブル:
+| t3chn0's ソフトウェア  | 動作OS | バージョン  | メモ                   |
+|------------------------+--------+-------------+------------------------|
+| W-SIM Poisoning System | hogex  | 0.52 \alpha | ポイズン               |
+| Messenger moo          | mom-ex | 5.2 \beta   | moo you                |
+| さばできあがったー     | num-b  | 1.552       | 鯖が揚がったらお知らせ |
+|------------------------+--------+-------------+------------------------|
+
+*作ってみよう*
+
+作成方法:
+; |hoge|hoge1|hoge2| ;
+; |- <TAB> ;
+
+キー操作:
+| Key     | 動作     |
+|---------+----------|
+| <TAB>   | 欄の移動 |
+| <RET>   | 行追加   |
+| C-c C-c | 揃える   |
+| C-c -   | 下に横線 |
+|---------+----------|
+
+#DEMO:
+1. create table
+2. C-cデモ
+3. M-Up, M-Down, M-Left, M-Rightで動かす
+
+#DEMO-SPACE
+
+--------------------------------------------------------------------
+
+** Create basic ToDos
+ToDoはどこにでも記述できる。
+
+例: (C-c C-t / S-Left / S-Right )
+; * TODO example todo
+; * DONE finished
+
+例: タグ付け (C-c C-c)
+; * TODO tag example 						    :example:
+; * DONE done tag example 					    :example:
+
+TODOは必ずしも、TODO/DONE だけではないので、新たなステータスを追加する:
+#+TODO: TODO | DONE
+#+TODO: BUG | FIXED HALT |
+(C-c C-cで反映)
+
+#DEMO:
+1. ToDoの作成
+2. TODO/DONEステータス変更
+3. 新しくステータスを作って変更
+
+#DEMO-SPACE
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+
+** Inserting dates
+C-c . とすることで、カレンダーが表示され、簡単に日付を入力できる
+| <2009-10-21 Wed> |
+
+時間も入れたい場合、C-u C-c . 
+| <2009-10-21 Wed 18:30> |
+
+#DEMO:
+1. Insert Date
+2. Insert Date/Time
+3. Change y/m/d with cursor (S-up/down)
+
+#DEMO-SPACE
+--------------------------------------------------------------------
+<2009-10-21 Wed>
+
+--------------------------------------------------------------------
+
+*** ToDoの期限設定
+例: (C-c C-d)
+| ** TODO print out stdio.h  |
+| DEADLINE: <2009-11-01 Sun> |
+
+#DEMO-SPACE
+--------------------------------------------------------------------
+
+* OSC準備
+** 事前
+*** TODO 第7回つくらぐ勉強会の案内の作成
+**** TODO 印刷
+*** TODO ポスター作成
+*** TODO 配置決定
+*** TODO 案内ML投げ
+    
+** 直前

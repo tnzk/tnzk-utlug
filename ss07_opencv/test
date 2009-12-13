@@ -1,0 +1,5 @@
+./startup lena.bmp startup.bmp 
+./binarize lena.bmp binarize.bmp 
+./pickbycolor lena.bmp pickbycolor.bmp 
+./kernel lena.bmp kernel.bmp 
+./kernel_blur lena.bmp kernel_blur.bmp 
