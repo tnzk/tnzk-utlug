@@ -48,7 +48,21 @@ void line( int x1, int y1, int x2, int y2)
 
 void octant( int r)
 {
-  ploti( 0, 0);
+  int x = 0;
+  int y = r;
+  int d = 3 - (r << 1);
+
+  ploti( x, y);
+
+  while(x < y){
+    if(d < 0){
+      d += (x << 2) + 6;
+    }else{
+      d += ((x - y) << 2) + 10;
+      y--;
+    }
+    ploti( ++x, y);
+  }
 }
 
 void display()
