@@ -29,7 +29,14 @@ of this file to check if that is new enough.
 
 We know a truth is always in the codes :)
 
+This use following libraries:
+
+ * Lua - am embedable script language
+ * freeglut - A free implementation of OpenGL Utility Library
+
 in yum:
 
   * lua
   * lua-devel
+  * freeglut
+  * freeglut-devel
