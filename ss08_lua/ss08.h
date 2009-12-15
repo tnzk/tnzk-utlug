@@ -6,4 +6,4 @@ typedef struct {
   double theta;
 } TkbEnemy;
 
-static const int NUM_ENEMY = 2;
+static const int NUM_ENEMY = 4;

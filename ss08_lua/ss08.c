@@ -63,7 +63,7 @@ void add_enminfo(lua_State* L, int index, TkbEnemy* enm)
   setfield(L, "theta", enm->theta);
   lua_settable(L, -3);
 }
-
+/*
 int main( int argc, char** argv)
 {
   
@@ -98,7 +98,7 @@ int main( int argc, char** argv)
       puts( "LOAD ERROR");
       return -1;
     }
-
+  }
     lua_getglobal(Ls[i], "decision");
     lua_newtable(Ls[i]);
     for( j = 0; j < NUM_ENEMY; j++){
@@ -106,11 +106,8 @@ int main( int argc, char** argv)
     }
     lua_pcall(Ls[i], 1, 1, 0);
 
-    dump_stack(Ls[i]);
-
-    lua_close(Ls[i]);
-  }
-
 
   return 0;
 }
+
+*/

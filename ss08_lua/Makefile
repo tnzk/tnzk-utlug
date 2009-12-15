@@ -1,9 +1,8 @@
 CC = gcc
 CFLAGS = -llua -lglut
 
-ss08: ss08.c ss08_render.c
-	$(CC) -llua -o ss08 ss08.c
-	$(CC) -lglut -o ss08_render ss08_render.c
+ss08: ss08.c ss08_render.c ss08.h
+	$(CC) -lglut -llua -o ss08 ss08_render.c ss08.c
 
 clean:
 	rm ss08
