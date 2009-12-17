@@ -39,9 +39,11 @@ function decision(enemies,id)
   my = enemies[id]
   m = 0
   d = 0
-  print(my['theta'] * 10)
+
+  --print( id .. ':' .. my['theta'] .. ' ' .. stat .. ' ' .. d)
+
   if stat == 0 then
-    if ((my['theta'] > 1.4) and (my['theta'] < 1.6)) then
+    if ((my['theta'] > 1.54) and (my['theta'] < 1.59)) then
       stat = 1
     else
       d = 1

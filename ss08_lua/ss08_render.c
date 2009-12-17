@@ -128,7 +128,7 @@ void get_decision(lua_State* L, int id, int* mov, int* dir, int* sht)
   for( i = 0; i < NUM_ENEMY; i++){
     add_enminfo(L, i + 1, (enms + i));
   }
-  lua_pushnumber(L,id);
+  lua_pushnumber(L, id + 1);
   
   lua_pcall(L, 2, 1, 0);
   *mov = getfield(L, -1, "move");
@@ -162,8 +162,6 @@ void timer(int value) {
   int mov = 0; // move
   int dir = 0; // direction
   int sht = 0; // shoot
-
-  printf("%f\n",enms[0].theta);
 
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].theta = normalize_rad(enms[i].theta);

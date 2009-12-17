@@ -41,6 +41,6 @@ function decision(enemies,id)
 --    print(e.x .. "," .. e.y)
 --    print(e.theta)
 --  end
-  return { move = 1, direction = -1, shoot = 0}
+  return { move = 1, direction = 1, shoot = 0}
 end
 
