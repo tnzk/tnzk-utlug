@@ -39,16 +39,41 @@ function decision(enemies,id)
   my = enemies[id]
   m = 0
   d = 0
+  lock = 0
 
-  --print( id .. ':' .. my['theta'] .. ' ' .. stat .. ' ' .. d)
-
-  if stat == 0 then
+  if lock == 0 and stat == 0 then
     if ((my['theta'] > 1.54) and (my['theta'] < 1.59)) then
       stat = 1
     else
       d = 1
     end
   end
+
+  if lock == 0 and stat == 1 then
+    m = 1
+    if my['y'] > 200 then
+      stat = 2
+    end
+  end
+
+  if lock == 0 and stat == 2 then
+    d = -1
+    if ((my['theta'] > 6.2) or (my['theta'] < 0.1)) then
+      stat = 3
+    end
+  end
+
+  if lock == 0 and stat == 3 then
+    m = 1
+    if my['x'] > 290 then
+      stat = 4
+    end
+  end
+
+  if lock == 0 and stat == 4 then
+    d = -1
+  end
+
   return { move = m, direction = d, shoot = 0}
 end
 
