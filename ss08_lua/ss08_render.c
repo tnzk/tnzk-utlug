@@ -83,29 +83,38 @@ void myInit()
   glEnable(GL_TEXTURE_2D);
 }
 
+void get_decision(lua_State* L, int* mov, int* dir, int* sht)
+{
+  int i;
+  lua_getglobal(L, "decision");
+  lua_newtable(L);
+  for( i = 0; i < NUM_ENEMY; i++){
+    add_enminfo(L, i + 1, (enms + i));
+  }
+  
+  lua_pcall(L, 1, 1, 0);
+  *mov = getfield(L, -1, "move");
+  *dir = getfield(L, -1, "direction");
+  *sht = getfield(L, -1, "shoot");
+  lua_pop(L, 1);
+}
+
 void timer(int value) {
-  int i = 0;
-  int j;
+  int i;
   int mov = 0; // move
   int dir = 0; // direction
   int sht = 0; // shoot
 
-  lua_getglobal(Ls[i], "decision");
-  lua_newtable(Ls[i]);
-  for( j = 0; j < NUM_ENEMY; j++){
-    add_enminfo(Ls[i], i + 1, (enms + i));
-  }
+  for( i = 0; i < NUM_ENEMY; i++){
+    lua_State* L = Ls[enms[i].type];
 
-  lua_pcall(Ls[i], 1, 1, 0);
-  mov = getfield(Ls[i], -1, "move");
-  dir = getfield(Ls[i], -1, "direction");
-  sht = getfield(Ls[i], -1, "shoot");
-  lua_pop(Ls[i], 1);
-
-  switch(dir){
-  case -1: enms[i].theta -= 1.0; break;
-  case  0: break;
-  case  1: enms[i].theta += 1.0; break;
+    get_decision(L, &mov, &dir, &sht);
+    
+    switch(dir){
+    case -1: enms[i].theta -= 1.0; break;
+    case  0: break;
+    case  1: enms[i].theta += 1.0; break;
+    }
   }
 
   glutPostRedisplay();
@@ -145,7 +154,7 @@ int main(int argc, char *argv[])
 
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].id = i;
-    enms[i].type = NUM_ENEMY - i;
+    enms[i].type = i & 1;
     enms[i].x = (i + 1) * 100 - 320;
     enms[i].y = (i + 2) * 100 - 320;
     enms[i].theta = i * 15;

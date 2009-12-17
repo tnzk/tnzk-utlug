@@ -6,5 +6,3 @@ ss08: ss08.c ss08_render.c ss08.h
 
 clean:
 	rm ss08
-	rm ss08_render
-	rm *~ *.o

@@ -35,16 +35,14 @@ function decision(enemies)
   --           1: do not shoot
   -- }
   for e in values(enemies) do
-  --[[
-    print('------------------------')
-    print(e.id)
-    print(e.type)
-    print(e.x)
-    print(e.y)
-    print(e.theta)
-  ]]
+   -- print('------------------------')
+   -- print(e.id)
+   -- print(e.type)
+   -- print(e.x)
+   -- print(e.y)
+   -- print(e.theta)
   end
-  return { move = 1, direction = -1, shoot = 0}
+  return { move = 1, direction = 1, shoot = 0}
 
 end
 
