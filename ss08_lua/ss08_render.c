@@ -155,8 +155,8 @@ int main(int argc, char *argv[])
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].id = i;
     enms[i].type = i & 1;
-    enms[i].x = (i + 1) * 100 - 320;
-    enms[i].y = (i + 2) * 100 - 320;
+    enms[i].x = (i + 1) * 50 - 320;
+    enms[i].y = (i + 2) * 50 - 320;
     enms[i].theta = i * 15;
   }
 

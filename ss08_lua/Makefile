@@ -4,10 +4,10 @@ CFLAGS = -llua -lglut
 ss08: ss08_lua.o ss08_render.o
 	$(CC) $(CFLAGS) -o ss08 ss08_render.o ss08_lua.o
 
-ss08_lua.o: ss08_lua.c
+ss08_lua.o: ss08_lua.c ss08.h
 	$(CC) -c ss08_lua.c
 
-ss08_render.o: ss08_render.c
+ss08_render.o: ss08_render.c ss08.h
 	$(CC) -c ss08_render.c
 
 .PHONY: clean
