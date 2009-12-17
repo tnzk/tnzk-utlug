@@ -4,7 +4,9 @@ function values(t)
   return function () i = i + 1; return t[i] end
 end
 
-function decision(enemies)
+stat = 0
+
+function decision(enemies,id)
   -- Describe how to decide your action.
   -- Information of enemies who close to you will
   -- be passd as the table named enemies
@@ -34,15 +36,17 @@ function decision(enemies)
   --           0: shoot
   --           1: do not shoot
   -- }
-  for e in values(enemies) do
-   -- print('------------------------')
-   -- print(e.id)
-   -- print(e.type)
-   -- print(e.x)
-   -- print(e.y)
-   -- print(e.theta)
+  my = enemies[id]
+  m = 0
+  d = 0
+  print(my['theta'] * 10)
+  if stat == 0 then
+    if ((my['theta'] > 1.4) and (my['theta'] < 1.6)) then
+      stat = 1
+    else
+      d = 1
+    end
   end
-  return { move = 1, direction = 1, shoot = 0}
-
+  return { move = m, direction = d, shoot = 0}
 end
 

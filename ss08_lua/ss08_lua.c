@@ -61,6 +61,13 @@ void setfield(lua_State* L, const char* key, int value)
   lua_setfield(L, -2, key);
 }
 
+void dsetfield(lua_State* L, const char* key, double value)
+{
+  // hmm...
+  lua_pushnumber(L, value);
+  lua_setfield(L, -2, key);
+}
+
 void add_enminfo(lua_State* L, int index, TkbEnemy* enm)
 {
   lua_pushnumber(L, index);
@@ -69,7 +76,7 @@ void add_enminfo(lua_State* L, int index, TkbEnemy* enm)
   setfield(L, "type", enm->type);
   setfield(L, "x", enm->x);
   setfield(L, "y", enm->y);
-  setfield(L, "theta", enm->theta);
+  dsetfield(L, "theta", enm->theta);
   lua_settable(L, -3);
 }
 /*

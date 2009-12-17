@@ -102,7 +102,25 @@ void myInit()
   glEnable(GL_TEXTURE_2D);
 }
 
-void get_decision(lua_State* L, int* mov, int* dir, int* sht)
+double normalize_rad( double rad)
+{
+  double d;
+  
+  if(rad > 0.0){
+    d = -M_PI * 2;
+  }else{
+    d =  M_PI * 2;
+  }
+  
+  while(!(0.0 <= rad && rad < M_PI * 2)){
+    rad += d;
+  }
+  
+  return rad;
+
+}
+
+void get_decision(lua_State* L, int id, int* mov, int* dir, int* sht)
 {
   int i;
   lua_getglobal(L, "decision");
@@ -110,8 +128,9 @@ void get_decision(lua_State* L, int* mov, int* dir, int* sht)
   for( i = 0; i < NUM_ENEMY; i++){
     add_enminfo(L, i + 1, (enms + i));
   }
+  lua_pushnumber(L,id);
   
-  lua_pcall(L, 1, 1, 0);
+  lua_pcall(L, 2, 1, 0);
   *mov = getfield(L, -1, "move");
   *dir = getfield(L, -1, "direction");
   *sht = getfield(L, -1, "shoot");
@@ -144,9 +163,15 @@ void timer(int value) {
   int dir = 0; // direction
   int sht = 0; // shoot
 
+  printf("%f\n",enms[0].theta);
+
+  for( i = 0; i < NUM_ENEMY; i++){
+    enms[i].theta = normalize_rad(enms[i].theta);
+  }
+
   for( i = 0; i < NUM_ENEMY; i++){
     lua_State* L = Ls[enms[i].type];
-    get_decision(L, &mov, &dir, &sht);
+    get_decision(L, enms[i].id, &mov, &dir, &sht);
     enm_move( enms + i, mov);
     enm_turn( enms + i, dir);
 
@@ -174,9 +199,10 @@ int main(int argc, char *argv[])
     Ls[i] = lua_open();
     luaL_openlibs(Ls[i]);
 
-    if(luaL_dofile(Ls[i], argv[i + 1])){
-      puts( "LOAD ERROR");
-      return -1;
+    if(luaL_dofile(Ls[i], argv[i + 1]) ) {
+      printf("%sを開けませんでした\n", argv[i + 1]);
+      printf("error : %s\n", lua_tostring(Ls[i], -1) );
+      return 1;
     }
   }
 
