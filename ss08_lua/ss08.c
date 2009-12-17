@@ -46,6 +46,15 @@ void dump_stack( lua_State* L)
   printf("+--+--+-------------------------\n\n");
 }
 
+int getfield(lua_State* L, int index, const char* key)
+{
+  int r;
+  lua_getfield(L, index, key);
+  r = lua_tonumber(L, -1);
+  lua_pop(L,1);
+  return r;
+}
+
 void setfield(lua_State* L, const char* key, int value)
 {
   lua_pushnumber(L, value);

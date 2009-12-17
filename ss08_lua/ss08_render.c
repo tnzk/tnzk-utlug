@@ -86,13 +86,28 @@ void myInit()
 void timer(int value) {
   int i = 0;
   int j;
+  int mov = 0; // move
+  int dir = 0; // direction
+  int sht = 0; // shoot
+
   lua_getglobal(Ls[i], "decision");
   lua_newtable(Ls[i]);
   for( j = 0; j < NUM_ENEMY; j++){
     add_enminfo(Ls[i], i + 1, (enms + i));
-    }
+  }
+
   lua_pcall(Ls[i], 1, 1, 0);
-  
+  mov = getfield(Ls[i], -1, "move");
+  dir = getfield(Ls[i], -1, "direction");
+  sht = getfield(Ls[i], -1, "shoot");
+  lua_pop(Ls[i], 1);
+
+  switch(dir){
+  case -1: enms[i].theta -= 1.0; break;
+  case  0: break;
+  case  1: enms[i].theta += 1.0; break;
+  }
+
   glutPostRedisplay();
   glutTimerFunc(20 , timer , 0);
 }
