@@ -33,14 +33,15 @@ void reshape( int w, int h)
   glMatrixMode( GL_MODELVIEW);
 }
 
-void showbox( int size, int type)
+void showbox( int size, int id)
 {
   int s = size >> 1;
   int m = size >> 3;
+  int cid = id + 1;
 
-  glColor3f( 0.8 * ((type & 1) >> 0),
-	     0.8 * ((type & 2) >> 1),
-	     0.8 * ((type & 4) >> 2));
+  glColor3f( 0.8 * ((cid & 1) >> 0),
+	     0.8 * ((cid & 2) >> 1),
+	     0.8 * ((cid & 4) >> 2));
 
 
   glBegin(GL_TRIANGLES);
@@ -85,7 +86,7 @@ void display()
 		    enms[i].y,
 		    0);
       glRotatef( RAD2DEG(enms[i].theta), 0, 0, 1.0);
-      showbox( ENEMY_SIZE, enms[i].type);
+      showbox( ENEMY_SIZE, enms[i].id);
     }
     glPopMatrix();
   }

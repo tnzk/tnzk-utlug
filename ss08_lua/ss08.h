@@ -8,7 +8,7 @@ typedef struct {
   double theta;
 } TkbEnemy;
 
-static const int NUM_ENEMY = 2;
+static const int NUM_ENEMY = 4;
 static const int ENEMY_SIZE = 32;
 static const double D_OMG = M_PI / 32.0;
 
