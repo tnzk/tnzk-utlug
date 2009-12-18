@@ -19,7 +19,7 @@ function decision(enemies,id)
     if look_at(my, 1.57) then
       stat = 1
     else
-      d = 1
+      d = -1
     end
   end
 

@@ -85,7 +85,7 @@ void display()
 		    enms[i].y,
 		    0);
       glRotatef( RAD2DEG(enms[i].theta), 0, 0, 1.0);
-      showbox( 32, enms[i].type);
+      showbox( ENEMY_SIZE, enms[i].type);
     }
     glPopMatrix;
   }
@@ -140,14 +140,49 @@ void enm_move( TkbEnemy* enm, int mov)
 {
   double dx = mov * 4.0 * cos(enm->theta);
   double dy = mov * 4.0 * sin(enm->theta);
+  int h_enm = ENEMY_SIZE >> 1;
 
   enm->x += (int)dx;
   enm->y += (int)dy;
 
-  if(enm->x < -320) enm->x = -320;
-  if(enm->x >  320) enm->x =  320;
-  if(enm->y < -240) enm->y = -240;
-  if(enm->y >  240) enm->y =  240;
+  if(enm->x < -320 + h_enm) enm->x = -320 + h_enm;
+  if(enm->x >  320 - h_enm) enm->x =  320 - h_enm;
+  if(enm->y < -240 + h_enm) enm->y = -240 + h_enm;
+  if(enm->y >  240 - h_enm) enm->y =  240 - h_enm;
+
+}
+
+int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
+{
+  // 0, 1 => false, true
+  int px[4];
+  int py[4];
+  int qx[4];
+  int qy[4];
+  int h_enm = ENEMY_SIZE >> 1;
+  int i,j;
+
+  px[0] = enm1->x - h_enm; py[0] = enm1->y - h_enm;
+  px[1] = enm1->x - h_enm; py[1] = enm1->y + h_enm;
+  px[2] = enm1->x + h_enm; py[2] = enm1->y + h_enm;
+  px[3] = enm1->x + h_enm; py[3] = enm1->y - h_enm;
+
+  qx[0] = enm2->x - h_enm; qy[0] = enm2->y - h_enm;
+  qx[1] = enm2->x - h_enm; qy[1] = enm2->y + h_enm;
+  qx[2] = enm2->x + h_enm; qy[2] = enm2->y + h_enm;
+  qx[3] = enm2->x + h_enm; qy[3] = enm2->y - h_enm;
+
+  for( i = 0; i < 4; i++){
+    for( j = 0; j < 4; j++){
+      int dx = enms[i].x - qx[j];
+      int dy = enms[i].y - qy[j];
+      double l = sqrt( (double)(dx * dx + dy * dy));
+      if( l < (double)h_enm){
+	return 1;
+      }
+    }
+  }
+  return 0;
 
 }
 
@@ -162,13 +197,21 @@ void enm_turn( TkbEnemy* enm, int dir)
 }
 
 void timer(int value) {
-  int i;
+  int i, j;
   int mov = 0; // move
   int dir = 0; // direction
   int sht = 0; // shoot
 
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].theta = normalize_rad(enms[i].theta);
+    for( j = 0; j < NUM_ENEMY; j++){
+      if( ( i != j)&& (hit_test((enms + i),(enms + j)))){
+	enms[i].x = def_x[i];
+	enms[i].y = def_y[i];
+	enms[j].x = def_x[j];
+	enms[j].y = def_y[j];
+      }
+    }
   }
 
   for( i = 0; i < NUM_ENEMY; i++){
@@ -194,8 +237,8 @@ int main(int argc, char *argv[])
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].id = i;
     enms[i].type = i & 1;
-    enms[i].x = (i + 1) * 50 - 320;
-    enms[i].y = (i + 2) * 50 - 320;
+    enms[i].x = def_x[i];
+    enms[i].y = def_y[i];
     enms[i].theta = 0.0;
   }
 
