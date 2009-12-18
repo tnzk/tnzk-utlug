@@ -111,8 +111,7 @@ double normalize_rad( double rad)
   }else{
     d =  M_PI * 2;
   }
-  
-  while(!(0.0 <= rad && rad < M_PI * 2)){
+  while(!(0.0 <= rad && rad <= M_PI * 2)){
     rad += d;
   }
   
@@ -192,7 +191,7 @@ int main(int argc, char *argv[])
     enms[i].type = i & 1;
     enms[i].x = (i + 1) * 50 - 320;
     enms[i].y = (i + 2) * 50 - 320;
-    enms[i].theta = i * 15;
+    enms[i].theta = 0.0;
   }
 
   if( argc == 1){
