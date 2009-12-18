@@ -5,7 +5,7 @@ function values(t)
 end
 
 function look_at(my, dir)
-  return (my['theta'] > dir - 0.02) and (my['theta'] < dir + 0.02)
+  return (my['theta'] > dir - 0.05) and (my['theta'] < dir + 0.05)
 end
 
 stat = 0

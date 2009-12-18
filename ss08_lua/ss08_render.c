@@ -168,7 +168,7 @@ void timer(int value) {
   }
 
   for( i = 0; i < NUM_ENEMY; i++){
-    lua_State* L = Ls[enms[i].type];
+    lua_State* L = Ls[enms[i].id];
     get_decision(L, enms[i].id, &mov, &dir, &sht);
     enm_move( enms + i, mov);
     enm_turn( enms + i, dir);
@@ -185,19 +185,29 @@ int main(int argc, char *argv[])
   int i;
   int result;
 
+  enms = (TkbEnemy*)malloc(sizeof(TkbEnemy) * NUM_ENEMY);
+
+  for( i = 0; i < NUM_ENEMY; i++){
+    enms[i].id = i;
+    enms[i].type = i & 1;
+    enms[i].x = (i + 1) * 50 - 320;
+    enms[i].y = (i + 2) * 50 - 320;
+    enms[i].theta = i * 15;
+  }
+
   if( argc == 1){
     puts("Too few parameters. This require a file name of lua script as an argument.");
     return -1;
   }
   num_ai = argc - 1;
-  Ls = (lua_State**)malloc(num_ai * sizeof(lua_State*));
+  Ls = (lua_State**)malloc(NUM_ENEMY * sizeof(lua_State*));
 
-  for( i = 0; i < num_ai; i++){
+  for( i = 0; i < NUM_ENEMY; i++){
     int j;
     Ls[i] = lua_open();
     luaL_openlibs(Ls[i]);
 
-    if(luaL_dofile(Ls[i], argv[i + 1]) ) {
+    if(luaL_dofile(Ls[i], argv[enms[i].type + 1]) ) {
       printf("%sを開けませんでした\n", argv[i + 1]);
       printf("error : %s\n", lua_tostring(Ls[i], -1) );
       return 1;
@@ -208,16 +218,6 @@ int main(int argc, char *argv[])
   glutInitWindowPosition( 0, 0);
   glutInit( &argc, argv);
   glutInitDisplayMode( GLUT_RGBA| GLUT_DOUBLE | GLUT_DEPTH);
-
-  enms = (TkbEnemy*)malloc(sizeof(TkbEnemy) * NUM_ENEMY);
-
-  for( i = 0; i < NUM_ENEMY; i++){
-    enms[i].id = i;
-    enms[i].type = i & 1;
-    enms[i].x = (i + 1) * 50 - 320;
-    enms[i].y = (i + 2) * 50 - 320;
-    enms[i].theta = i * 15;
-  }
 
   glutCreateWindow("ss08");
   myInit();
