@@ -14,7 +14,7 @@ an embeddable script language.
 Milestones are listed below with each status:
 
   1. Handling the C API provided by Lua		[DONE] 100%
-  2. Designing structures to simulate within	[DOIN]  80%
+  2. Designing structures to simulate within	[DONE] 100%
      functions written by user in Lua, and
      building an interface to wrap it.
   3. Writing a simple shooting game with	[DOIN]  10%
@@ -34,7 +34,7 @@ This use following libraries:
  * Lua - am embedable script language
  * freeglut - A free implementation of OpenGL Utility Library
 
-in yum:
+Install with yum:
 
   * lua
   * lua-devel
