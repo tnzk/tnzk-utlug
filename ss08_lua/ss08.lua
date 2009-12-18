@@ -39,6 +39,6 @@ function decision(enemies,id)
      end
   end
   
-  return { move = m, direction = d, shoot = 0}
+  return { move = m, direction = d, shoot = 1}
 end
 

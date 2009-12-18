@@ -39,7 +39,12 @@ void showbox( int size, int id)
   int m = size >> 3;
   int cid = id + 1;
 
-  glColor3f( 0.2, 0.2, 0.2); 
+  if(enms[id].heat){
+    double ratio = (double)enms[id].heat / (double)OLD_AGE;
+    glColor3f( ratio, ratio * 0.5, 0.0);
+  }else{
+    glColor3f( 0.2, 0.2, 0.2); 
+  }
   glBegin(GL_TRIANGLES);
   
   glTexCoord2f(0 , 0); glVertex2d( -s, -s);
@@ -51,6 +56,7 @@ void showbox( int size, int id)
   glTexCoord2f(1 , 0); glVertex2d(  s, -s);
   
   glEnd();
+
 
   glColor3f( 0.8 * ((cid & 1) >> 0),
 	     0.8 * ((cid & 2) >> 1),
@@ -84,7 +90,9 @@ void display()
 		    enms[i].y,
 		    0);
       glRotatef( RAD2DEG(enms[i].theta), 0, 0, 1.0);
-      showbox( ENEMY_SIZE, enms[i].id);
+      if( IS_OLD(enms + i) || (enms[i].age & 4)){
+	showbox( ENEMY_SIZE, enms[i].id);
+      }
     }
     glPopMatrix();
   }
@@ -113,9 +121,7 @@ double normalize_rad( double rad)
   while(!(0.0 <= rad && rad <= M_PI * 2)){
     rad += d;
   }
-  
   return rad;
-
 }
 
 void get_decision(lua_State* L, int id, int* mov, int* dir, int* sht)
@@ -133,22 +139,6 @@ void get_decision(lua_State* L, int id, int* mov, int* dir, int* sht)
   *dir = getfield(L, -1, "direction");
   *sht = getfield(L, -1, "shoot");
   lua_pop(L, 1);
-}
-
-void enm_move( TkbEnemy* enm, int mov)
-{
-  double dx = mov * 4.0 * cos(enm->theta);
-  double dy = mov * 4.0 * sin(enm->theta);
-  int h_enm = ENEMY_SIZE >> 1;
-
-  enm->x += (int)dx;
-  enm->y += (int)dy;
-
-  if(enm->x < -320 + h_enm) enm->x = -320 + h_enm;
-  if(enm->x >  320 - h_enm) enm->x =  320 - h_enm;
-  if(enm->y < -240 + h_enm) enm->y = -240 + h_enm;
-  if(enm->y >  240 - h_enm) enm->y =  240 - h_enm;
-
 }
 
 int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
@@ -185,6 +175,22 @@ int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
 
 }
 
+void enm_move( TkbEnemy* enm, int mov)
+{
+  double dx = mov * 4.0 * cos(enm->theta);
+  double dy = mov * 4.0 * sin(enm->theta);
+  int h_enm = ENEMY_SIZE >> 1;
+
+  enm->x += (int)dx;
+  enm->y += (int)dy;
+
+  if(enm->x < -320 + h_enm) enm->x = -320 + h_enm;
+  if(enm->x >  320 - h_enm) enm->x =  320 - h_enm;
+  if(enm->y < -240 + h_enm) enm->y = -240 + h_enm;
+  if(enm->y >  240 - h_enm) enm->y =  240 - h_enm;
+
+}
+
 void enm_turn( TkbEnemy* enm, int dir)
 {
 
@@ -192,6 +198,15 @@ void enm_turn( TkbEnemy* enm, int dir)
   case -1: enm->theta -= D_OMG; break;
   case  0: break;
   case  1: enm->theta += D_OMG; break;
+  }
+}
+
+void enm_shoot( TkbEnemy* enm, int sht)
+{
+  if(sht != 1) return;
+  if(IS_OLD(enm) && ((enm->age - enm->attacked) > OLD_AGE << 1)){
+    enm->heat = OLD_AGE;
+    enm->attacked = enm->age;
   }
 }
 
@@ -203,9 +218,10 @@ void timer(int value) {
 
   for( i = 0; i < NUM_ENEMY; i++){
     enms[i].age++;
+    if(enms[i].heat > 0) enms[i].heat--;
     enms[i].theta = normalize_rad(enms[i].theta);
     for( j = 0; j < NUM_ENEMY; j++){
-      if(    ( i != j) && (enms[i].age > 30) && (enms[j].age > 30)
+      if(    ( i != j) && (IS_OLD(enms + i)) && (IS_OLD(enms + j))
 	  && (hit_test((enms + i),(enms + j)))){
 	enms[i].x = def_x[j];
 	enms[i].y = def_y[j];
@@ -220,9 +236,9 @@ void timer(int value) {
   for( i = 0; i < NUM_ENEMY; i++){
     lua_State* L = Ls[enms[i].id];
     get_decision(L, enms[i].id, &mov, &dir, &sht);
-    enm_move( enms + i, mov);
-    enm_turn( enms + i, dir);
-
+    enm_move(  enms + i, mov);
+    enm_turn(  enms + i, dir);
+    enm_shoot( enms + i, sht);
   }
 
   glutPostRedisplay();
@@ -242,6 +258,8 @@ int main(int argc, char *argv[])
     enms[i].y = def_y[i];
     enms[i].theta = 0.0;
     enms[i].age = 0;
+    enms[i].heat = 0;
+    enms[i].attacked = 0;
   }
 
   if( argc == 1){
