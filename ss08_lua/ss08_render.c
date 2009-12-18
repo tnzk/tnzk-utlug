@@ -87,7 +87,7 @@ void display()
       glRotatef( RAD2DEG(enms[i].theta), 0, 0, 1.0);
       showbox( ENEMY_SIZE, enms[i].type);
     }
-    glPopMatrix;
+    glPopMatrix();
   }
 
   glFlush();
@@ -160,7 +160,7 @@ int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
   int qx[4];
   int qy[4];
   int h_enm = ENEMY_SIZE >> 1;
-  int i,j;
+  int i;
 
   px[0] = enm1->x - h_enm; py[0] = enm1->y - h_enm;
   px[1] = enm1->x - h_enm; py[1] = enm1->y + h_enm;
@@ -226,9 +226,7 @@ void timer(int value) {
 
 int main(int argc, char *argv[])
 {
-  lua_State* L;
   int i;
-  int result;
 
   enms = (TkbEnemy*)malloc(sizeof(TkbEnemy) * NUM_ENEMY);
 
@@ -248,7 +246,6 @@ int main(int argc, char *argv[])
   Ls = (lua_State**)malloc(NUM_ENEMY * sizeof(lua_State*));
 
   for( i = 0; i < NUM_ENEMY; i++){
-    int j;
     Ls[i] = lua_open();
     luaL_openlibs(Ls[i]);
 
