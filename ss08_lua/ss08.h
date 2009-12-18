@@ -6,6 +6,7 @@ typedef struct {
   int x;
   int y;
   double theta;
+  int age;
 } TkbEnemy;
 
 static const int NUM_ENEMY = 4;

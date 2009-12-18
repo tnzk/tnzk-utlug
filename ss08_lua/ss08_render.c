@@ -160,6 +160,8 @@ int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
   int qy[4];
   int h_enm = ENEMY_SIZE >> 1;
   int i;
+  int dx, dy;
+  double l;
 
   px[0] = enm1->x - h_enm; py[0] = enm1->y - h_enm;
   px[1] = enm1->x - h_enm; py[1] = enm1->y + h_enm;
@@ -170,11 +172,11 @@ int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
   qx[1] = enm2->x - h_enm; qy[1] = enm2->y + h_enm;
   qx[2] = enm2->x + h_enm; qy[2] = enm2->y + h_enm;
   qx[3] = enm2->x + h_enm; qy[3] = enm2->y - h_enm;
-
+  
   for( i = 0; i < 4; i++){
-    int dx = enm1->x - qx[i];
-    int dy = enm1->y - qy[i];
-    double l = sqrt( (double)(dx * dx + dy * dy));
+    dx = enm1->x - qx[i];
+    dy = enm1->y - qy[i];
+    l = sqrt( (double)(dx * dx + dy * dy));
     if( l < (double)h_enm + 2.0){
       return 1;
     }
@@ -200,13 +202,17 @@ void timer(int value) {
   int sht = 0; // shoot
 
   for( i = 0; i < NUM_ENEMY; i++){
+    enms[i].age++;
     enms[i].theta = normalize_rad(enms[i].theta);
     for( j = 0; j < NUM_ENEMY; j++){
-      if( ( i != j)&& (hit_test((enms + i),(enms + j)))){
-	enms[i].x = def_x[i];
-	enms[i].y = def_y[i];
-	enms[j].x = def_x[j];
-	enms[j].y = def_y[j];
+      if(    ( i != j) && (enms[i].age > 30) && (enms[j].age > 30)
+	  && (hit_test((enms + i),(enms + j)))){
+	enms[i].x = def_x[j];
+	enms[i].y = def_y[j];
+	enms[j].x = def_x[i];
+	enms[j].y = def_y[i];
+	enms[i].age = 0;
+	enms[j].age = 0;
       }
     }
   }
@@ -235,6 +241,7 @@ int main(int argc, char *argv[])
     enms[i].x = def_x[i];
     enms[i].y = def_y[i];
     enms[i].theta = 0.0;
+    enms[i].age = 0;
   }
 
   if( argc == 1){
