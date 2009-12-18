@@ -39,11 +39,7 @@ void showbox( int size, int id)
   int m = size >> 3;
   int cid = id + 1;
 
-  glColor3f( 0.8 * ((cid & 1) >> 0),
-	     0.8 * ((cid & 2) >> 1),
-	     0.8 * ((cid & 4) >> 2));
-
-
+  glColor3f( 0.2, 0.2, 0.2); 
   glBegin(GL_TRIANGLES);
   
   glTexCoord2f(0 , 0); glVertex2d( -s, -s);
@@ -56,7 +52,9 @@ void showbox( int size, int id)
   
   glEnd();
 
-  glColor3f( 1.0, 1.0, 1.0); 
+  glColor3f( 0.8 * ((cid & 1) >> 0),
+	     0.8 * ((cid & 2) >> 1),
+	     0.8 * ((cid & 4) >> 2));
   glBegin(GL_TRIANGLES);
   
   glTexCoord2f(0 , 0); glVertex2d( -m + 10, -m);
