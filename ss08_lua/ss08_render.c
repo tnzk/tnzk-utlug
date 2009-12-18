@@ -173,13 +173,11 @@ int hit_test( TkbEnemy* enm1, TkbEnemy* enm2)
   qx[3] = enm2->x + h_enm; qy[3] = enm2->y - h_enm;
 
   for( i = 0; i < 4; i++){
-    for( j = 0; j < 4; j++){
-      int dx = enms[i].x - qx[j];
-      int dy = enms[i].y - qy[j];
-      double l = sqrt( (double)(dx * dx + dy * dy));
-      if( l < (double)h_enm){
-	return 1;
-      }
+    int dx = enm1->x - qx[i];
+    int dy = enm1->y - qy[i];
+    double l = sqrt( (double)(dx * dx + dy * dy));
+    if( l < (double)h_enm + 2.0){
+      return 1;
     }
   }
   return 0;
