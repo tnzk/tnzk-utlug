@@ -144,6 +144,11 @@ void enm_move( TkbEnemy* enm, int mov)
   enm->x += (int)dx;
   enm->y += (int)dy;
 
+  if(enm->x < -320) enm->x = -320;
+  if(enm->x >  320) enm->x =  320;
+  if(enm->y < -240) enm->y = -240;
+  if(enm->y >  240) enm->y =  240;
+
 }
 
 void enm_turn( TkbEnemy* enm, int dir)
