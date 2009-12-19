@@ -12,7 +12,7 @@ function decision(enemies,id)
    my = enemies[id]
    m = 1
    d = 0
-   l = 50000
+   l = 801
    
    target = nil
    for e in values(enemies) do
@@ -24,9 +24,9 @@ function decision(enemies,id)
 	    target = e
 	    l = ll
 	 end
-     end
-  end
-  
+      end
+   end
+   
   rad = math.atan2(my['y'] - target['y'], my['x'] - target['x']) + math.pi
   
   if look_at(my,rad) then

@@ -225,7 +225,7 @@ void enm_turn( TkbEnemy* enm, int dir)
 void enm_shoot( TkbEnemy* enm, int sht)
 {
   if(sht != 1) return;
-  if(IS_OLD(enm) && ((enm->age - enm->attacked) > OLD_AGE << 1)){
+  if(IS_OLD(enm) && ((enm->age - enm->attacked) > OLD_AGE)&& !(enm->heat)){
     enm->heat = OLD_AGE;
     enm->attacked = enm->age;
   }
@@ -251,6 +251,8 @@ void timer(int value) {
 	  enms[j].y = def_y[i];
 	  enms[j].age = 0;
 	  enms[j].bital--;
+	}else if(!(enms[i].heat) && (enms[j].heat)){
+	  
 	}else{
 
 	  enms[i].x = def_x[i];
@@ -260,11 +262,9 @@ void timer(int value) {
 
 	  enms[i].age = 0;
 	  enms[j].age = 0;
-	  enms[i].bital--;
-	  enms[j].bital--;
+	  //enms[i].bital--;
+	  //enms[j].bital--;
 	}
-	enms[i].theta = 0.0;
-	enms[i].theta = 0.0;
       }
     }
   }
