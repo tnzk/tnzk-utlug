@@ -16,7 +16,7 @@ function decision(enemies,id)
    
    target = nil
    for e in values(enemies) do
-      if e['id'] ~= my['id'] then
+      if (e['id'] ~= my['id']) and (e['bital'] > 0) then
 	 dx = e['x'] - my['x']
 	 dy = e['y'] - my['y']
 	 ll = math.sqrt( dx * dx + dy * dy)

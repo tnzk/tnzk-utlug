@@ -96,6 +96,27 @@ void display()
     }
     glPopMatrix();
   }
+  for( i = 0; i < NUM_ENEMY; i++){
+    int ci = i + 1;
+    int j;
+    glColor3f( 0.8 * ((ci & 1) >> 0),
+	       0.8 * ((ci & 2) >> 1),
+	       0.8 * ((ci & 4) >> 2));
+    for( j = 0; j < enms[i].bital; j++){
+      glBegin(GL_TRIANGLES);
+      
+      glVertex2d( -300 + j * 5, 218 - i * 21);
+      glVertex2d( -297 + j * 5, 198 - i * 21);
+      glVertex2d( -297 + j * 5, 218 - i * 21);
+      
+      glVertex2d( -300 + j * 5, 218 - i * 21);
+      glVertex2d( -297 + j * 5, 198 - i * 21);
+      glVertex2d( -300 + j * 5, 198 - i * 21);
+      
+      glEnd();
+    }
+
+  }
 
   glFlush();
   glutSwapBuffers();
@@ -221,46 +242,50 @@ void timer(int value) {
     if(enms[i].heat > 0) enms[i].heat--;
     enms[i].theta = normalize_rad(enms[i].theta);
     for( j = 0; j < NUM_ENEMY; j++){
-      if(    ( i != j) && (IS_OLD(enms + i)) && (IS_OLD(enms + j))
+      if( ( i != j) && (IS_OLD(enms + i)) && (IS_OLD(enms + j))
+	  && (enms[i].bital > 0) && (enms[j].bital > 0)
 	  && (hit_test((enms + i),(enms + j)))){
-	enms[i].x = def_x[j];
-	enms[i].y = def_y[j];
-	enms[j].x = def_x[i];
-	enms[j].y = def_y[i];
-	enms[i].age = 0;
-	enms[j].age = 0;
+
+	if((enms[i].heat) && !(enms[j].heat)){
+	  enms[j].x = def_x[i];
+	  enms[j].y = def_y[i];
+	  enms[j].age = 0;
+	  enms[j].bital--;
+	}else{
+
+	  enms[i].x = def_x[i];
+	  enms[i].y = def_y[i];
+	  enms[j].x = def_x[j];
+	  enms[j].y = def_y[j];
+
+	  enms[i].age = 0;
+	  enms[j].age = 0;
+	  enms[i].bital--;
+	  enms[j].bital--;
+	}
+	enms[i].theta = 0.0;
+	enms[i].theta = 0.0;
       }
     }
   }
 
   for( i = 0; i < NUM_ENEMY; i++){
-    lua_State* L = Ls[enms[i].id];
-    get_decision(L, enms[i].id, &mov, &dir, &sht);
-    enm_move(  enms + i, mov);
-    enm_turn(  enms + i, dir);
-    enm_shoot( enms + i, sht);
+    if( enms[i].bital > 0){
+      lua_State* L = Ls[enms[i].id];
+      get_decision(L, enms[i].id, &mov, &dir, &sht);
+      enm_move(  enms + i, mov);
+      enm_turn(  enms + i, dir);
+      enm_shoot( enms + i, sht);
+    }
   }
 
   glutPostRedisplay();
-  glutTimerFunc(20 , timer , 0);
+  glutTimerFunc(10 , timer , 0);
 }
 
 int main(int argc, char *argv[])
 {
   int i;
-
-  enms = (TkbEnemy*)malloc(sizeof(TkbEnemy) * NUM_ENEMY);
-
-  for( i = 0; i < NUM_ENEMY; i++){
-    enms[i].id = i;
-    enms[i].type = i & 1;
-    enms[i].x = def_x[i];
-    enms[i].y = def_y[i];
-    enms[i].theta = 0.0;
-    enms[i].age = 0;
-    enms[i].heat = 0;
-    enms[i].attacked = 0;
-  }
 
   if( argc == 1){
     puts("Too few parameters. This require a file name of lua script as an argument.");
@@ -268,6 +293,20 @@ int main(int argc, char *argv[])
   }
   num_ai = argc - 1;
   Ls = (lua_State**)malloc(NUM_ENEMY * sizeof(lua_State*));
+
+  enms = (TkbEnemy*)malloc(sizeof(TkbEnemy) * NUM_ENEMY);
+
+  for( i = 0; i < NUM_ENEMY; i++){
+    enms[i].id = i;
+    enms[i].type = i % num_ai;
+    enms[i].x = def_x[i];
+    enms[i].y = def_y[i];
+    enms[i].theta = 0.0;
+    enms[i].age = 0;
+    enms[i].heat = 0;
+    enms[i].attacked = 0;
+    enms[i].bital = 10;
+  }
 
   for( i = 0; i < NUM_ENEMY; i++){
     Ls[i] = lua_open();
@@ -279,6 +318,8 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+
+
 
   glutInitWindowSize( width, height);
   glutInitWindowPosition( 0, 0);

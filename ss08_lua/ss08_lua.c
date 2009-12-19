@@ -77,6 +77,8 @@ void add_enminfo(lua_State* L, int index, TkbEnemy* enm)
   setfield(L, "x", enm->x);
   setfield(L, "y", enm->y);
   dsetfield(L, "theta", enm->theta);
+  dsetfield(L, "bital", enm->bital);
+  dsetfield(L, "heat", enm->heat);
   lua_settable(L, -3);
 }
 /*
