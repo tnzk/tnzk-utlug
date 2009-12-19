@@ -4,6 +4,8 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include "ss08.h"
+
 int main (void)
 {
 
@@ -22,6 +24,7 @@ int main (void)
   printf("path: %s\n", lua_tostring(L, -2));
   printf("hight: %d\n", lua_tointeger(L, -1));
 
+  dump_stack(L);
 
   lua_close(L);
   return 0;

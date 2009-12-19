@@ -27,3 +27,4 @@ static const int def_y[] = {  200, 200, -200, -200};
 
 int getfield(lua_State*, int, const char*);
 void add_enminfo(lua_State*, int, TkbEnemy*);
+void dump_stack( lua_State*);
