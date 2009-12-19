@@ -1,1 +1,1 @@
-./ss08 ss08.lua ss08_rev.lua
+./ss08 scripts/tracker.lua scripts/tracker.lua scripts/tracker.lua scripts/runner.lua
