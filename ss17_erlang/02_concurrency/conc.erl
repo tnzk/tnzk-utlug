@@ -1,5 +1,5 @@
 -module(conc).
--export([start/0, proc/2]).
+-export([start/0, proc/2, serv/0]).
 
 %% Simple function using Erlang process
 
@@ -13,4 +13,10 @@ start() ->
   spawn(conc, proc, ["Hello", 5]),
   spawn(conc, proc, ["Hi", 5]).  
 
-%% 
+%% Messaging
+
+serv() ->
+  receive
+    Msg -> io:format("echo: ~p~n", [Msg]),
+    serv()
+  end.
