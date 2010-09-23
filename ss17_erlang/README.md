@@ -6,5 +6,5 @@ Chapters
 -----------
 
 1. Get started on Erlang
-2. Concurrency
+2. Networking
 3. 
