@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="raphael-min.js"></script>
+  <style type="text/css">
+    #path {
+      width: 390px;
+      height: 340px;
+      border: solid #aaa 1px;
+      border-radius: 3px;
+      -moz-border-radius: 3px;
+      padding: 5px;
+      font-size: 14px;
+    }
+    #attr {
+      width: 390px;
+      height: 40px;
+      border: solid #aaa 1px;
+      border-radius: 3px;
+      -moz-border-radius: 3px;
+      padding: 5px;
+      font-size: 14px;
+    }
+    #paper { border: solid #555 1px; width: 400px; height: 400px; float:left;}
+    #edit { width: 410px;float: left; height:420px;}
+    #control { clear: both;}
+  </style>
+  <title>Instant SVG Path String</title>
+</head>
+<body>
+  <h1>Instant SVG Path String</h1>
+  <p>See <a href="http://www.w3.org/TR/SVG/paths.html#PathData" target="_blank">SVG path string format</a>.</p>
+  <div id="edit"><textarea id="attr"></textarea><textarea id="path"></textarea></div>
+  <div id="paper"></div>
+  <div id="control"><input id="drawit" type="button" value="Draw" /></div>
+  <script type="text/javascript">
+    var paper = Raphael('paper', 400, 400);
+    $('#drawit').click(function(){
+      paper.clear();
+      paper.path($('#path').val()).attr(eval('('+$('#attr').val()+')'));
+    });
+  </script>
+</body>
+</html>
